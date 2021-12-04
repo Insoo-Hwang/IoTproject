@@ -53,3 +53,4 @@
 -파일 사용 방법
 1. 분할 압축된 iotprojectreal.egg 파일을 알집을 통해 압축 해제하여 실행
 2. 아두이노를 세팅 후 AWS_IoT_DHT11_final.egg 파일을 알집을 통해 해제하여 사용
+3. LambdaProject1~4.txt, DynamodbAPI.txt 파일을 열어 순서대로 수행
