@@ -47,6 +47,9 @@
 7. 학생 계정으로 출석 확인 페이지 접근시
 ![KakaoTalk_20211204_153341891_10](https://user-images.githubusercontent.com/70841847/144700728-c0da2d1a-549e-470a-8f6f-2edc69ab83f3.jpg)
 
+8. 초음파 거리 50cm 이하로 수신시 발송되는 메일
+![이메일](https://user-images.githubusercontent.com/70841847/144700776-dd085e30-8a85-4f48-8628-341aae7b01ae.JPG)
+
 -파일 사용 방법
 1. 분할 압축된 iotprojectreal.egg 파일을 알집을 통해 압축 해제하여 실행
 2. 아두이노를 세팅 후 AWS_IoT_DHT11_final.egg 파일을 알집을 통해 해제하여 사용
