@@ -9,6 +9,9 @@
 
 ![슬라이드1](https://user-images.githubusercontent.com/70841847/144699576-f37e23f7-34c5-44c0-9599-e9caec0bd22f.JPG)
 
+
+![캡처](https://user-images.githubusercontent.com/70841847/144700610-6ae7a363-e0a9-481b-96b4-c338ab1d1802.JPG)
+
 -주요 기능
 
 1. Firebase를 이용하여 사용자 관리(교수만 사용할 수 있는 영역과 학생도 사용할 수 있는 영역 구분, 게시글 작성시 사용자 구분, 로그인 시스템)
@@ -19,7 +22,30 @@
 
 -실행 화면
 
+1. 로그인 화면
+![KakaoT![KakaoTalk_20211204_153341891_01](https://user-images.githubusercontent.com/70841847/144700653-59db6302-40e8-477a-b150-2acf9bacb8da.jpg)
+![KakaoTalk_20211204_153341891_01](https://user-images.githubusercontent.com/70841847/144700661-5bed6403-ad95-442d-88b5-ee5a08dcdd3d.jpg)
 
+2. 메인 화면
+![KakaoTalk_20211204_153341891_02](https://user-images.githubusercontent.com/70841847/144700668-206ca63b-3b65-4103-a302-d818da14c6c1.jpg)
+
+3. 자유게시판 및 글 작성
+![KakaoTalk_20211204_153341891_03](https://user-images.githubusercontent.com/70841847/144700675-f1af1106-34d2-4176-828a-f97fc6c5ff87.jpg)
+![KakaoTalk_20211204_153341891_04](https://user-images.githubusercontent.com/70841847/144700692-5127f555-dde6-4a22-b6f5-3f15d967a6f7.jpg)
+![KakaoTalk_20211204_153341891_05](https://user-images.githubusercontent.com/70841847/144700697-03e9cfa3-23a8-4134-adcf-7bb53adba628.jpg)
+
+4. 출석 확인
+![KakaoTalk_20211204_153341891_06](https://user-images.githubusercontent.com/70841847/144700704-fd57e7ea-cfe0-4871-856a-56f8d66570ad.jpg)
+![KakaoTalk_20211204_153341891_07](https://user-images.githubusercontent.com/70841847/144700705-256588a2-a7e2-4a3d-9981-7524b9067dd6.jpg)
+
+5. 온도 확인
+![KakaoTalk_20211204_153341891_08](https://user-images.githubusercontent.com/70841847/144700712-d8390891-8dbb-4156-b04c-6c6711a0dd8b.jpg)
+
+6. 질문 확인
+![KakaoTalk_20211204_153341891_09](https://user-images.githubusercontent.com/70841847/144700720-e696a751-a9e7-4201-b76e-26a73dc77d08.jpg)
+
+7. 학생 계정으로 출석 확인 페이지 접근시
+![KakaoTalk_20211204_153341891_10](https://user-images.githubusercontent.com/70841847/144700728-c0da2d1a-549e-470a-8f6f-2edc69ab83f3.jpg)
 
 -파일 사용 방법
 1. 분할 압축된 iotprojectreal.egg 파일을 알집을 통해 압축 해제하여 실행
