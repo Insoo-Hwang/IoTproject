@@ -1,0 +1,104 @@
+
+AWS Lambda 프로젝트를 Eclipse AWS Toolkit을 이용해 생성한다.
+  Project name : UpdateDeviceLambdaJavaProject
+  Class name : UpdateDeviceHandler
+  Input Type : Custom
+
+pom.xml파일을 열어 <dependencies> 태그 안에 다음 의존 성을 추가한 후 저장
+
+<dependencies>
+    ...    
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-iot</artifactId>
+    </dependency>
+
+</dependencies>
+
+UpdateDeviceHandler.java 파일을 열고 다음으로 코드를 수정함
+
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+
+import com.amazonaws.services.iotdata.AWSIotData;
+import com.amazonaws.services.iotdata.AWSIotDataClientBuilder;
+import com.amazonaws.services.iotdata.model.UpdateThingShadowRequest;
+import com.amazonaws.services.iotdata.model.UpdateThingShadowResult;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.fasterxml.jackson.annotation.JsonCreator;
+
+public class UpdateDeviceHandler implements RequestHandler<Event, String> {
+
+    @Override
+    public String handleRequest(Event event, Context context) {
+        context.getLogger().log("Input: " + event);
+
+        AWSIotData iotData = AWSIotDataClientBuilder.standard().build();
+
+        String payload = getPayload(event.tags);
+
+        UpdateThingShadowRequest updateThingShadowRequest  =  new UpdateThingShadowRequest().withThingName(event.device).withPayload(ByteBuffer.wrap(payload.getBytes()));
+
+        UpdateThingShadowResult result = iotData.updateThingShadow(updateThingShadowRequest);
+        byte[] bytes = new byte[result.getPayload().remaining()];
+        result.getPayload().get(bytes);
+        String resultString = new String(bytes);
+        return resultString;
+    }
+
+    private String getPayload(ArrayList<Tag> tags) {
+        String tagstr = "";
+        for (int i=0; i < tags.size(); i++) {
+            if (i !=  0) tagstr += ", ";
+            tagstr += String.format("\"%s\" : \"%s\"", tags.get(i).tagName, tags.get(i).tagValue);
+        }
+        return String.format("{ \"state\": { \"desired\": { %s } } }", tagstr);
+    }
+
+}
+
+class Event {
+    public String device;
+    public ArrayList<Tag> tags;
+
+    public Event() {
+         tags = new ArrayList<Tag>();
+    }
+}
+
+class Tag {
+    public String tagName;
+    public String tagValue;
+
+    @JsonCreator 
+    public Tag() {
+    }
+
+    public Tag(String n, String v) {
+        tagName = n;
+        tagValue = v;
+    }
+}
+Upload function to AWS Lamda를 선택 후, 함수 이름을 UpdateDeviceFunction, IAM을 AWSIoTFullAccess정책이 연결된 역할로 설정 후 Finish를 눌러 AWS에 업로드
+
+API Gateway 콘솔로 이동하여 만들어둔 mydeviceAPI로 이동 -> /{device}를 선택 후 메서드 생성을 하여 PUT함수를 생성 이 때 프록시 통합 사용은 미선택,
+리전 선택, Lambda함수는 전에 생성한 GUpdateDeviceFunction을 선택 후 저장 -> 통합 요청에 들어가 매핑 템플릿 추가 후 content type에 application/json 입력 -> 
+요청 본문 패스스루에 권장되는 정의된 템플릿이 없는 경루(권장)을 선택 -> 템플릿 생성 편집기에 다음과 같이 입력
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "UpdateDeviceInput",
+  "type" : "object",
+  "properties" : {
+      "tags" : {
+          "type": "array",
+          "items": {
+              "type": "object",
+              "properties" : {
+                "tagName" : { "type" : "string"},
+                "tagValue" : { "type" : "string"}
+              }
+          }
+      }
+  }
+}
