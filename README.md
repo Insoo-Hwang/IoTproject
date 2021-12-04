@@ -52,7 +52,7 @@
 
 -파일 사용 방법
 1. 분할 압축된 iotprojectreal.egg 파일을 알집을 통해 압축 해제하여 실행 
-2. (zip파일 다운로드 링크 : https://drive.google.com/file/d/1t1f9wAtK0Dgt1yaOA5VsIlL29eZMplWw/view?usp=sharing)
-3. 아두이노를 세팅 후 AWS_IoT_DHT11_final.egg 파일을 알집을 통해 해제하여 사용 
-4. (zip파일 다운로드 링크 : https://drive.google.com/file/d/1QV7RuD4sIjyBDwft85Xpua40_EniLdBF/view?usp=sharing)
-5. LambdaProject1~5.txt 파일을 열어 순서대로 수행
+(zip파일 다운로드 링크 : https://drive.google.com/file/d/1t1f9wAtK0Dgt1yaOA5VsIlL29eZMplWw/view?usp=sharing)
+2. 아두이노를 세팅 후 AWS_IoT_DHT11_final.egg 파일을 알집을 통해 해제하여 사용 
+(zip파일 다운로드 링크 : https://drive.google.com/file/d/1QV7RuD4sIjyBDwft85Xpua40_EniLdBF/view?usp=sharing)
+3. LambdaProject1~5.txt 파일을 열어 순서대로 수행
