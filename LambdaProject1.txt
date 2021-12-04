@@ -1,0 +1,52 @@
+AWS Lambda 프로젝트를 Eclipse AWS Toolkit을 이용해 생성한다.
+  Project name : GetDeviceLambdaJavaProject
+  Class name : GetDeviceHandler
+  Input Type : Custom
+
+pom.xml파일을 열어 <dependencies> 태그 안에 다음 의존 성을 추가한 후 저장
+
+<dependencies>
+    ...    
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-iot</artifactId>
+    </dependency>
+
+  </dependencies>
+
+GetDeviceHandler.java 파일을 열고 다음으로 코드를 수정함
+
+import com.amazonaws.services.iotdata.AWSIotData;
+import com.amazonaws.services.iotdata.AWSIotDataClientBuilder;
+import com.amazonaws.services.iotdata.model.GetThingShadowRequest;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+
+public class GetDeviceHandler implements RequestHandler<Event, String> {
+
+    @Override
+    public String handleRequest(Event event, Context context) {
+        AWSIotData iotData = AWSIotDataClientBuilder.standard().build();
+
+        GetThingShadowRequest getThingShadowRequest  =  new GetThingShadowRequest().withThingName(event.device);
+        iotData.getThingShadow(getThingShadowRequest);
+
+        return new String(iotData.getThingShadow(getThingShadowRequest).getPayload().array());
+    }
+}
+
+class Event {
+    public String device;
+}
+
+Upload function to AWS Lamda를 선택 후, 함수 이름을 GetDeviceFunction, IAM을 AWSIoTFullAccess정책이 연결된 역할로 설정 후 Finish를 눌러 AWS에 업로드
+
+API Gateway 콘솔로 이동하여 API생성 -> REST API 구축 -> API이름을 mydeviceAPI로 설정 -> 리소스 작업을 눌러 리소스 이름이 devices인 리소스 생성 -> 
+/devices를 선택 후 다시 리소스 작업을 눌러 리소스 이름이 device, 리소스 경로가 {device}, API Gateway CORS가 활성화 된 리소스 생성 ->
+/{device}를 선택 후 메서드 생성을 하여 GET함수를 생성 이 때 프록시 통합 사용은 미선택, 리전 선택, Lambda함수는 전에 생성한 GetDeviceFunction을 선택 후 저장 ->
+통합 요청에 들어가 매핑 템플릿 추가 후 content type에 application/json 입력 -> 요청 본문 패스스루에 권장되는 정의된 템플릿이 없는 경루(권장)을 선택 ->
+템플릿 생성 편집기에 다음과 같이 입력
+{
+  "device": "$input.params('device')"
+}
+-> CORS 지원 활성화 후 API배포를 선택하고 배포 스테이지는 prod로 선택 후 배포 -> URL/devices/MKRWiFi10102을 안드로이드 앱의 MainActivity 32, 41 line에 넣음
