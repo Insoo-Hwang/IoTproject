@@ -1,0 +1,72 @@
+AWS IAM 콘솔에 접속 -> 사용자에서 사용자 추가 -> 사용자 이름 입력 후 Programming access와 AWS Management 콘솔 access 선택 ->
+권한 설정에서 기존 정책 직접 연결 선택 -> 사용자 만들기 -> 엑세스 키와 보안키 획득
+
+AWS SNS에 접속하여 유형은 표준, 이름은 Ultrasonic인 주제 생성 -> 주제 ARN을 복사 ->
+구독에 들어가 구독 생성 -> 복사한 주제 ARN을 붙여넣기, 프로토콜은 이메일로 설정 후 구독 생성
+
+AWS Lambda 프로젝트를 Eclipse AWS Toolkit을 이용해 생성한다.
+  Project name : MonitoringUltrasonic
+  Class name : LambdaFunctionHandler
+  Input Type : Custom
+
+pom.xml파일을 열어 gson에 대한 의존성 추가
+
+		<dependencies>
+				...				
+				<dependency>
+						<groupId>com.google.code.gson</groupId>
+						<artifactId>gson</artifactId>
+						<version>2.8.0</version>
+				</dependency>
+		</dependencies>
+    
+GetDeviceHandler.java 파일을 열고 다음으로 코드를 수정함
+
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
+public class LambdaFunctionHandler implements RequestHandler<Object, String> {
+
+	@Override
+	public	String	handleRequest(Object	input,	Context	context) {
+					context.getLogger().log("Input:	" +	input);
+					String	json	= ""+input;
+					JsonParser	parser	= new JsonParser();
+					JsonElement	element	=	parser.parse(json);
+					JsonElement	state	=	element.getAsJsonObject().get("state");
+					JsonElement	reported	=	state.getAsJsonObject().get("reported");
+					String	Distance	=	reported.getAsJsonObject().get("Distance").getAsString();
+					double	di	=	Double.valueOf(Distance);
+					final	String	AccessKey=""; //IAM AccessKey로 수정
+					final	String	SecretKey=""; //IAM SecretKey로 수정
+					final	String	topicArn=""; //앞서 생성한 topic의 topicArn으로 수정
+					BasicAWSCredentials	awsCreds	= new BasicAWSCredentials(AccessKey,	SecretKey);		
+					AmazonSNS	sns	=	AmazonSNSClientBuilder.standard()
+																	.withRegion(Regions.US_EAST_1)
+																	.withCredentials( new AWSStaticCredentialsProvider(awsCreds) )
+																	.build();
+					final	String	msg	= "A student has a question";
+					final	String	subject	= "Student Question";
+					if (di	<= 50.0) {
+									PublishRequest	publishRequest	= new PublishRequest(topicArn,	msg,	subject);
+									PublishResult	publishResponse	=	sns.publish(publishRequest);
+					}
+					return	subject+Distance;
+	}
+}
+
+Upload function to AWS Lamda를 선택 후, 함수 이름을 Ultrasonic, IAM을 LambdaBasicAccess정책이 연결된 역할로 설정 후 Finish를 눌러 AWS에 업로드
+
+AWS IoT Core에 접속하여 동작의 규칙을 선택한다 -> 생성을 눌러 IoT규칙을 생성 후 규칙 이름을 UltrasonicRule, 
+규칙 쿼리문은 SELECT * FROM '$aws/things/MKRWiFi10102/shadow/update/accepted', 메시지를 Lambda함수로 전송에서 Ultrasonic 선택
+
+초음파에 손을 갖다 대면 이메일이 수신되는지 
