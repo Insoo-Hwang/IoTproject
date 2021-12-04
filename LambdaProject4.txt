@@ -2,69 +2,54 @@ AWS DynamoDB에 접속하여 이름이 Final, 기본키가 time(숫자)인 테�
 
 AWS Lambda 프로젝트를 Eclipse AWS Toolkit을 이용해 생성한다.
   Project name : RecordingUltrasonic
-  Class name : RecordingDeviceInfoHandler
+  Class name : RecordingUltrasonicHandler
   Input Type : Custom
    
-RecordingDeviceInfoHandler.java 파일을 열고 다음으로 코드를 수정함
+RecordingUltrasonicHandler.java 파일을 열고 다음으로 코드를 수정함
 
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
-import com.amazonaws.services.dynamodbv2.document.spec.PutItemSpec;
-import com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
-
-public class RecordingDeviceInfoHandler implements RequestHandler<Thing, String> {
-   private DynamoDB dynamoDb;
-   private String DYNAMODB_TABLE_NAME = "Final";
-
-   @Override
-   public String handleRequest(Thing input, Context context) {
-      this.initDynamoDbClient();
-      persistData(input);
-      return "Success   in   storing   to   DB!";
-   }
-
-   private PutItemOutcome persistData(Thing thing) throws ConditionalCheckFailedException {
-      // Epoch Conversion Code: https://www.epochconverter.com/
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd   HH:mm:ss");
-      sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-      String timeString = sdf.format(new java.util.Date(thing.timestamp * 1000));
-      return this.dynamoDb.getTable(DYNAMODB_TABLE_NAME)
-            .putItem(new PutItemSpec().withItem(new Item().withPrimaryKey("time", thing.timestamp)
-                  .withString("Distance", thing.state.reported.Distance)
-                  .withString("LED0", thing.state.reported.LED0).withString("timestamp", timeString)));
-   }
-
-   private void initDynamoDbClient() {
-      AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard().withRegion("ap-northeast-2").build();
-      this.dynamoDb = new DynamoDB(client);
-   }
+import	java.text.SimpleDateFormat;
+import	java.util.TimeZone;
+import	com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import	com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import	com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import	com.amazonaws.services.dynamodbv2.document.Item;
+import	com.amazonaws.services.dynamodbv2.document.PutItemOutcome;
+import	com.amazonaws.services.dynamodbv2.document.spec.PutItemSpec;
+import	com.amazonaws.services.dynamodbv2.model.ConditionalCheckFailedException;
+import	com.amazonaws.services.lambda.runtime.Context;
+import	com.amazonaws.services.lambda.runtime.RequestHandler;
+public class RecordingUltrasonicHandler implements RequestHandler<Thing,	String> {
+				private	DynamoDB	dynamoDb;
+				private	String	DYNAMODB_TABLE_NAME	= "Final";
+				@Override
+				public	String	handleRequest(Thing	input,	Context	context) {
+								this.initDynamoDbClient();
+								persistData(input);
+								return "Success	in	storing	to	DB!";
+				}
+				private	PutItemOutcome	persistData(Thing	thing) throws	ConditionalCheckFailedException	{
+								SimpleDateFormat	sdf	= new SimpleDateFormat ( "yyyy-MM-dd	HH:mm:ss");
+								sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+								String	timeString	=	sdf.format(new java.util.Date (thing.timestamp*1000));
+								if(thing.state.reported.Distance <= 50) {
+									return this.dynamoDb.getTable(DYNAMODB_TABLE_NAME).putItem(new PutItemSpec().withItem(new Item().withPrimaryKey("time",	thing.timestamp).withString("timestamp",timeString)));
+								}else { return null;}
+				}
+				private void initDynamoDbClient() {
+								AmazonDynamoDB	client	=	AmazonDynamoDBClientBuilder.standard().withRegion("us-east-1").build();
+								this.dynamoDb	= new DynamoDB(client);
+				}
 }
-
 class Thing {
-   public State state = new State();
-   public long timestamp;
-
-   public class State {
-      public Tag reported = new Tag();
-      public Tag desired = new Tag();
-
-      public class Tag {
-         public String LED0;
-         public String LED1;
-         public String LED2;
-         public String BUTTON1;
-         public String BUTTON2;
-         public String Distance;
-         public String temperature;
-      }
-   }
+				public	State	state	= new State();
+				public long	timestamp;
+				public class State {
+								public	Tag	reported	= new Tag();
+								public	Tag	desired	= new Tag();
+								public class Tag {
+												public	int	Distance;
+								}
+				}
 }
 
 Upload function to AWS Lamda를 선택 후, 함수 이름을 Dynamodb, IAM을 dynamodbAccess정책이 연결된 역할로 설정 후 Finish를 눌러 AWS에 업로드
