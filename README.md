@@ -7,7 +7,7 @@
 
 -구조도
 
-![슬라이드1](https://user-images.githubusercontent.com/70841847/144699576-f37e23f7-34c5-44c0-9599-e9caec0bd22f.JPG)
+![구조도](https://user-images.githubusercontent.com/70841847/144703699-a1e56562-97d1-4477-a2cd-fcd6c3507a3e.jpg)
 
 
 ![캡처](https://user-images.githubusercontent.com/70841847/144700610-6ae7a363-e0a9-481b-96b4-c338ab1d1802.JPG)
