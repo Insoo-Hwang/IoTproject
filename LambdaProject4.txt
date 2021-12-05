@@ -21,13 +21,12 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 
 public class RecordingUltrasonicHandler implements RequestHandler<Thing, String> {
    private DynamoDB dynamoDb;
-   private String DYNAMODB_TABLE_NAME = "Final";
+   private String DYNAMODB_TABLE_NAME = "Final"; //dynamoDB의 이름
 
    @Override
    public String handleRequest(Thing input, Context context) {
       
-      // 거리 값이 50보다 작을 경우, 저장하지 않는다
-      if(Double.valueOf(input.state.reported.Distance) > 50) {
+      if(Double.valueOf(input.state.reported.Distance) > 50) {  // 거리 값이 50보다 작을 경우, 저장하지 않는다
          return "Too Long";
       }
       
@@ -45,7 +44,7 @@ public class RecordingUltrasonicHandler implements RequestHandler<Thing, String>
       return this.dynamoDb.getTable(DYNAMODB_TABLE_NAME)
             .putItem(new PutItemSpec().withItem(new Item().withPrimaryKey("time", thing.timestamp)
                   .withString("Distance", thing.state.reported.Distance)
-                  .withString("LED0", thing.state.reported.LED0).withString("timestamp", timeString)));
+                  .withString("LED0", thing.state.reported.LED0).withString("timestamp", timeString))); //dynamoDB에 저장될 속성 정의
    }
 
    private void initDynamoDbClient() {
