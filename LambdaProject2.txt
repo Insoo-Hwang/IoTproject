@@ -36,9 +36,10 @@ public class UpdateDeviceHandler implements RequestHandler<Event, String> {
 
         AWSIotData iotData = AWSIotDataClientBuilder.standard().build();
 
-        String payload = getPayload(event.tags);
-
-        UpdateThingShadowRequest updateThingShadowRequest  =  new UpdateThingShadowRequest().withThingName(event.device).withPayload(ByteBuffer.wrap(payload.getBytes()));
+        String payload = getPayload(event.tags); //업데이트할 페이로드
+        
+        //event에서 추출한 device로 페이로드를 보냄
+        UpdateThingShadowRequest updateThingS hadowRequest  =  new UpdateThingShadowRequest().withThingName(event.device).withPayload(ByteBuffer.wrap(payload.getBytes()));
 
         UpdateThingShadowResult result = iotData.updateThingShadow(updateThingShadowRequest);
         byte[] bytes = new byte[result.getPayload().remaining()];
@@ -51,7 +52,7 @@ public class UpdateDeviceHandler implements RequestHandler<Event, String> {
         String tagstr = "";
         for (int i=0; i < tags.size(); i++) {
             if (i !=  0) tagstr += ", ";
-            tagstr += String.format("\"%s\" : \"%s\"", tags.get(i).tagName, tags.get(i).tagValue);
+            tagstr += String.format("\"%s\" : \"%s\"", tags.get(i).tagName, tags.get(i).tagValue); //API에 올라갈 태그이름-태그값(key-value)
         }
         return String.format("{ \"state\": { \"desired\": { %s } } }", tagstr);
     }
@@ -63,13 +64,13 @@ class Event {
     public ArrayList<Tag> tags;
 
     public Event() {
-         tags = new ArrayList<Tag>();
+         tags = new ArrayList<Tag>(); //Event안에 0개 이상의 태그가 존재할 수 있음
     }
 }
 
 class Tag {
-    public String tagName;
-    public String tagValue;
+    public String tagName; //LED1, LED2와 같이 수정할 태그의 이름 선언
+    public String tagValue; //해당 태그의 수정할 값을 받을 태그의 값 선언
 
     @JsonCreator 
     public Tag() {
