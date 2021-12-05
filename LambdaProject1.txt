@@ -28,15 +28,15 @@ public class GetDeviceHandler implements RequestHandler<Event, String> {
     public String handleRequest(Event event, Context context) {
         AWSIotData iotData = AWSIotDataClientBuilder.standard().build();
 
-        GetThingShadowRequest getThingShadowRequest  =  new GetThingShadowRequest().withThingName(event.device);
-        iotData.getThingShadow(getThingShadowRequest);
+        GetThingShadowRequest getThingShadowRequest  =  new GetThingShadowRequest().withThingName(event.device); //Event로 받은 device에 대한 thingname 추출
+        iotData.getThingShadow(getThingShadowRequest); //device의 device shadow를 get
 
         return new String(iotData.getThingShadow(getThingShadowRequest).getPayload().array());
     }
 }
 
 class Event {
-    public String device;
+    public String device; //변수가 device 하나인 Event 클래스 생성
 }
 
 Upload function to AWS Lamda를 선택 후, 함수 이름을 GetDeviceFunction, IAM을 AWSIoTFullAccess정책이 연결된 역할로 설정 후 Finish를 눌러 AWS에 업로드
@@ -49,4 +49,4 @@ API Gateway 콘솔로 이동하여 API생성 -> REST API 구축 -> API이름을 
 {
   "device": "$input.params('device')"
 }
--> CORS 지원 활성화 후 API배포를 선택하고 배포 스테이지는 prod로 선택 후 배포 -> URL/devices/MKRWiFi10102을 안드로이드 앱의 MainActivity 32, 41 line에 넣음
+-> CORS 지원 활성화 후 API배포를 선택하고 배포 스테이지는 prod로 선택 후 배포 -> URL/devices/MKRWiFi10102을 안드로이드 앱의 MainActivity 32, 41 line에 삽입
