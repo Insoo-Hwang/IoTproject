@@ -54,9 +54,9 @@ public class LambdaFunctionHandler implements RequestHandler<Object, String> {
 																	.withRegion(Regions.US_EAST_1)
 																	.withCredentials( new AWSStaticCredentialsProvider(awsCreds) )
 																	.build();
-					final	String	msg	= "A student has a question";
-					final	String	subject	= "Student Question";
-					if (di	<= 50.0) {
+					final	String	msg	= "A student has a question"; //이메일 제목
+					final	String	subject	= "Student Question"; //이메일 내용
+					if (di	<= 50.0) { //수신되는 초음파 거리가 50cm이하일 떄만 이메일을 전송
 									PublishRequest	publishRequest	= new PublishRequest(topicArn,	msg,	subject);
 									PublishResult	publishResponse	=	sns.publish(publishRequest);
 					}
