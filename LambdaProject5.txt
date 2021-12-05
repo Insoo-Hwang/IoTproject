@@ -9,13 +9,13 @@ exports.handler = async (event, context) => {
   let body;
   let statusCode = 200;
   const headers = {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json" //JSON타입으로 API작성
   };
 
   try {
     switch (event.routeKey) {
       case "GET /items":
-        body = await dynamo.scan({ TableName: "Final" }).promise();
+        body = await dynamo.scan({ TableName: "Final" }).promise(); //Final이라는 이름의 dynamoDB에서 GET
         break;
       default:
         throw new Error(`Unsupported route: "${event.routeKey}"`);
